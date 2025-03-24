@@ -58,6 +58,16 @@
 			path = AlertoUITests;
 			sourceTree = "<group>";
 		};
+		F33881172D919EEA0061D832 /* Arduino */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Arduino;
+			sourceTree = "<group>";
+		};
+		F33881192D919EFD0061D832 /* EdgeImpulse */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = EdgeImpulse;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -88,6 +98,8 @@
 		F33880BF2D9197930061D832 = {
 			isa = PBXGroup;
 			children = (
+				F33881192D919EFD0061D832 /* EdgeImpulse */,
+				F33881172D919EEA0061D832 /* Arduino */,
 				F33880CA2D9197930061D832 /* Alerto */,
 				F33880DB2D9197940061D832 /* AlertoTests */,
 				F33880E52D9197940061D832 /* AlertoUITests */,
@@ -122,6 +134,8 @@
 			);
 			fileSystemSynchronizedGroups = (
 				F33880CA2D9197930061D832 /* Alerto */,
+				F33881172D919EEA0061D832 /* Arduino */,
+				F33881192D919EFD0061D832 /* EdgeImpulse */,
 			);
 			name = Alerto;
 			packageProductDependencies = (
