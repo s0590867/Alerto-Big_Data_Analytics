@@ -18,5 +18,3 @@ struct AlertoApp: App {
         }
     }
 }
-
-

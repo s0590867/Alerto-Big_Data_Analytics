@@ -5,7 +5,7 @@ void clearLEDs(void);
 
 /* Includes ---------------------------------------------------------------- */
 #include <PDM.h>                  
-#include <Alerto_inferencing.h>   
+#include <Alerto2_inferencing.h>   
 #include <ArduinoBLE.h>
 #include <Adafruit_NeoPixel.h>
 
@@ -215,14 +215,14 @@ void loop()
 
     ei_impulse_result_t result = { 0 };
 
-    // LED-Anzeige: signalisiert Aufnahme und Klassifikation
-    indicateRecording(true);
+    // Es erfolgt KEIN Aufruf von indicateRecording(true),
+    // sodass die LED nicht automatisch weiß blinkt.
 
     // Kontinuierliche Klassifikation mittels run_classifier_continuous()
     EI_IMPULSE_ERROR r = run_classifier_continuous(&signal, &result, debug_nn);
     if (r != EI_IMPULSE_OK) {
         ei_printf("ERR: Failed to run classifier (%d)\r\n", r);
-        indicateRecording(false);
+        clearLEDs();
         return;
     }
 
@@ -241,7 +241,7 @@ void loop()
         if (maxScore >= DETECTION_THRESHOLD) {
             char predictedLabel[32];
             snprintf(predictedLabel, sizeof(predictedLabel), "%s", result.classification[maxIndex].label);
-            ei_printf("Predicted: %s (Score: %.5f)\r\n", predictedLabel, maxScore);
+            ei_printf("Predicted: %s (Confidence: %.5f)\r\n", predictedLabel, maxScore);
             ei_printf("(DSP: %d ms, Classification: %d ms)\r\n",
                       result.timing.dsp, result.timing.classification);
 #if EI_CLASSIFIER_HAS_ANOMALY == 1
@@ -250,7 +250,7 @@ void loop()
 
             // Setze LED-Farbe je nach erkanntem Label
             if (strcmp(predictedLabel, "Tuerklingel") == 0) {
-                setLEDColor(strip.Color(247, 255, 0));  // Gelb
+                setLEDColor(strip.Color(0, 0, 255));  // Blau
             }
             else if (strcmp(predictedLabel, "Rauchmelder") == 0) {
                 setLEDColor(strip.Color(255, 0, 0));  // Rot
