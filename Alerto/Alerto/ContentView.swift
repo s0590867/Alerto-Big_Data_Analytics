@@ -197,14 +197,20 @@ struct InfoView: View {
 
     var body: some View {
         NavigationView {
-            VStack(spacing: 20) {
+            VStack(spacing: 40) {
                 Text("Alerto App")
                     .font(.title)
                     .padding(.top)
-                Text("Version 1.0.0")
+                Text("Version 0.1")
                     .font(.headline)
-                Text("Diese App identifiziert Geräusche und informiert dich in Echtzeit. \n\nWeitere Infos können hier ergänzt werden.")
+                Text("Diese App identifiziert Geräusche mithilfe eines Arduino Nano 33 BLE Sense und informiert dich in Echtzeit.")
                     .multilineTextAlignment(.center)
+                Text("Bitte schließe den Arduino Nano 33 BLE Sense an den Strom an und warte einen Moment, damit sich die Verbindung herstellen kann.")
+                    .multilineTextAlignment(.center)
+                Text("entwickelt von Maximilian Berthold, Leander Piepenbring & Tobias Lindhorst.")
+                    .multilineTextAlignment(.center)
+                    .padding(.bottom)
+                    .foregroundColor(.gray)
                     .padding()
                 Spacer()
             }
