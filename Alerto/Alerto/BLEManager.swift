@@ -19,16 +19,13 @@ struct SoundRecord: Identifiable {
 }
 
 class BLEManager: NSObject, ObservableObject {
-    @Published var recognizedSound: String = "hört zu"
+    @Published var recognizedSound: String = "Kein Geräusch"
     @Published var serviceRunning: Bool = false  // Status des BLE-Services
     @Published var soundHistory: [SoundRecord] = []  // Liste der empfangenen Geräusche
-    @Published var shouldAnimate: Bool = false       // Wird hier nicht mehr direkt genutzt
-    
+
     private var centralManager: CBCentralManager!
     private var connectedPeripheral: CBPeripheral?
-    private var resetTimer: Timer?  // Timer, der nach 10 Sekunden das Signal zurücksetzt
-    
-    private var lastValidSound: String?  // Speichert den zuletzt gültigen Sound
+    private var resetTimer: Timer?  // Timer, der nach 10 s das Signal zurücksetzt
 
     // UUIDs – passe diese ggf. an
     private let soundServiceUUID = CBUUID(string: "12345678-1234-5678-1234-56789ABCDEF0")
@@ -64,10 +61,6 @@ class BLEManager: NSObject, ObservableObject {
         if centralManager.state == .poweredOn {
             centralManager.scanForPeripherals(withServices: [soundServiceUUID], options: nil)
             serviceRunning = true
-            shouldAnimate = true
-            recognizedSound = "hört zu"
-            resetTimer?.invalidate()
-            resetTimer = nil
             print("BLE-Service gestartet")
         } else {
             print("Bluetooth ist nicht eingeschaltet oder nicht verfügbar")
@@ -82,10 +75,6 @@ class BLEManager: NSObject, ObservableObject {
             connectedPeripheral = nil
         }
         serviceRunning = false
-        shouldAnimate = false
-        resetTimer?.invalidate()
-        resetTimer = nil
-        recognizedSound = "hört nicht zu"
         print("BLE-Service gestoppt")
     }
 }
@@ -144,35 +133,34 @@ extension BLEManager: CBCentralManagerDelegate, CBPeripheralDelegate {
         }
         
         DispatchQueue.main.async {
-            // Für den Fall, dass "rauschen" empfangen wird, setze recognizedSound auf "hört zu"
+            // Wenn das empfangene Signal "Rauschen" (case-insensitive) ist, ignoriere es
             if soundDetected.lowercased() == "rauschen" {
-                self.resetTimer?.invalidate()
-                self.recognizedSound = "hört zu"
-                // Kein Timer wird gestartet, solange der Dienst aktiv ist
+                if self.resetTimer == nil {
+                    self.resetTimer = Timer.scheduledTimer(withTimeInterval: 10, repeats: false) { _ in
+                        self.resetTimer = nil
+                        self.recognizedSound = "Kein Geräusch"
+                    }
+                }
                 return
             }
             
-            // Für alle anderen gültigen Signale:
+            // Für alle anderen Signale:
             self.resetTimer?.invalidate()
-            self.resetTimer = Timer.scheduledTimer(withTimeInterval: 10, repeats: false) { _ in
-                self.resetTimer = nil
-                if self.serviceRunning {
-                    self.recognizedSound = "hört zu"
-                } else {
-                    self.recognizedSound = "hört nicht zu"
-                }
-            }
-            
-            self.lastValidSound = soundDetected
             self.recognizedSound = soundDetected
-            // Die Animation bleibt aktiv, solange der Dienst läuft
-            self.shouldAnimate = self.serviceRunning
             
             // Gerät vibrieren lassen
             AudioServicesPlaySystemSound(kSystemSoundID_Vibrate)
             
             // Kritische Benachrichtigung versenden
             self.sendLocalNotification(for: soundDetected)
+            
+            // Starte den Timer: Nach 10 Sekunden wird das Signal der History hinzugefügt und zurückgesetzt
+            self.resetTimer = Timer.scheduledTimer(withTimeInterval: 10, repeats: false) { _ in
+                let record = SoundRecord(sound: soundDetected, timestamp: Date())
+                self.soundHistory.insert(record, at: 0)
+                self.recognizedSound = "Kein Geräusch"
+                self.resetTimer = nil
+            }
         }
     }
 }

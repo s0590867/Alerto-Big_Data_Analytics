@@ -2,16 +2,14 @@ import SwiftUI
 
 struct ContentView: View {
     @EnvironmentObject var bleManager: BLEManager
-    @State private var pulse: Bool = false
-    @State private var currentDate = Date()  // Aktualisiert jede Sekunde für die History
-    @State private var showInfo = false      // Zum Anzeigen des Info-Sheets
-    @State private var listeningDots: Int = 0  // Für die Animation der Ladeanzeige
+    @State private var pulse = false
+    @State private var currentDate = Date()  // Aktualisiert jede Sekunde
     
     // Standard-Hauptfarben (Blau)
     let primaryColor = Color(red: 28/255, green: 74/255, blue: 173/255)
     let secondaryColor = Color(red: 60/255, green: 100/255, blue: 210/255)
     
-    // Dynamischer Hintergrund, abhängig vom aktuell angezeigten Signal
+    // Dynamischer Hintergrund, abhängig vom aktuell angezeigten Geräusch
     var backgroundGradient: LinearGradient {
         let gradient: Gradient
         switch bleManager.recognizedSound {
@@ -39,32 +37,18 @@ struct ContentView: View {
         }
     }
     
-    // Computed Property für die anzuzeigende Nachricht:
-    // Wenn recognizedSound "hört zu" ist, wird der Text mit animierten Punkten angezeigt.
-    var displayText: String {
-        if bleManager.recognizedSound == "hört zu" {
-            return "hört zu" + String(repeating: ".", count: listeningDots)
-        } else {
-            return bleManager.recognizedSound
-        }
-    }
-    
     var body: some View {
         ZStack {
             backgroundGradient
                 .edgesIgnoringSafeArea(.all)
             
             VStack {
-                // Obere Sektion: Zentriertes Logo, Titel und Info-Button
+                // Obere Sektion: Logo und Titel
                 VStack(spacing: 20) {
                     Image("Logo")
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .frame(width: 200, height: 200)
-                        // Pulsierende Animation beim aktiven Dienst
-                        .scaleEffect(bleManager.serviceRunning ? (pulse ? 1.05 : 1.0) : 1.0)
-                        .animation(bleManager.serviceRunning ? Animation.easeInOut(duration: 1.0).repeatForever(autoreverses: true) : .none, value: pulse)
-                    
                     Text("Alerto")
                         .font(.custom("Fredoka-Bold", size: 80))
                         .foregroundColor(.white)
@@ -73,36 +57,36 @@ struct ContentView: View {
                 
                 Spacer()
                 
-                // Mittlere Sektion: Anzeige des aktuellen Signals und History-Liste
+                // Mittlere Sektion: Anzeige des aktuellen Signals und History
                 VStack(spacing: 20) {
+                    // Anzeige des aktuellen Signals (im Kasten)
                     ZStack {
                         RoundedRectangle(cornerRadius: 25, style: .continuous)
                             .fill(Color.white.opacity(0.2))
                             .frame(width: 300, height: 100)
                             .shadow(radius: 10)
-                            // Rechteck pulsiert, solange der Dienst aktiv ist
-                            .scaleEffect(bleManager.serviceRunning ? (pulse ? 1.05 : 1.0) : 1.0)
-                            .animation(bleManager.serviceRunning ? Animation.easeInOut(duration: 1.0).repeatForever(autoreverses: true) : .none, value: pulse)
-                        Text(displayText)
+                            .scaleEffect(pulse ? 1.05 : 1.0)
+                            .animation(.easeInOut(duration: 1.0).repeatForever(autoreverses: true), value: pulse)
+                        
+                        Text(bleManager.recognizedSound)
                             .font(.custom("Fredoka-Bold", size: 40))
                             .fontWeight(.semibold)
                             .foregroundColor(.white)
                             .padding()
                     }
-                    .onChange(of: bleManager.recognizedSound) { newValue in
-                        // Es erfolgt keine Steuerung der Pulsation hier; diese ist an bleManager.serviceRunning gekoppelt.
+                    .onChange(of: bleManager.recognizedSound) { _ in
+                        pulse.toggle()
+                    }
+                    .onAppear {
+                        pulse = true
                     }
                     
-                    // History-Tabelle – dauerhaft sichtbar
-                    VStack(alignment: .center, spacing: 8) {
-                        Text("Letzte Geräusche:")
-                            .font(.custom("Fredoka-Bold", size: 20))
-                            .foregroundColor(.white)
-                        if bleManager.soundHistory.isEmpty {
-                            Text("Noch keine Einträge")
-                                .font(.custom("Fredoka-Bold", size: 18))
-                                .foregroundColor(.white.opacity(0.8))
-                        } else {
+                    // History-Liste der zuletzt erkannten Geräusche
+                    if !bleManager.soundHistory.isEmpty {
+                        VStack(alignment: .center, spacing: 8) {
+                            Text("Letzte Geräusche:")
+                                .font(.custom("Fredoka-Bold", size: 20))
+                                .foregroundColor(.white)
                             ScrollView {
                                 ForEach(bleManager.soundHistory) { record in
                                     HStack {
@@ -121,13 +105,13 @@ struct ContentView: View {
                             }
                             .frame(maxHeight: 150)
                         }
+                        .padding(.horizontal)
                     }
-                    .padding(.horizontal)
                 }
                 
                 Spacer()
                 
-                // Untere Sektion: Start/Stop-Button
+                // Untere Sektion: Button zum Starten/Stoppen des BLE-Service
                 Button(action: {
                     if bleManager.serviceRunning {
                         bleManager.stopService()
@@ -146,62 +130,10 @@ struct ContentView: View {
                 .padding(.bottom, 20)
             }
             .padding()
-            
-            // Overlay: Info-Button oben rechts
-            VStack {
-                HStack {
-                    Spacer()
-                    Button(action: {
-                        showInfo.toggle()
-                    }) {
-                        Image(systemName: "info.circle")
-                            .font(.title)
-                            .foregroundColor(.white)
-                    }
-                    .padding()
-                }
-                Spacer()
-            }
         }
-        // Timer: Aktualisiert currentDate und animiert bei "hört zu" die Punkte
-        .onReceive(Timer.publish(every: 1, on: .main, in: .common).autoconnect()) { _ in
-            // Falls der Dienst nicht läuft, wird die Pulsation zurückgesetzt
-            if !bleManager.serviceRunning {
-                pulse = false
-            }
-            if bleManager.recognizedSound == "hört zu" {
-                listeningDots = (listeningDots + 1) % 4
-            }
-            currentDate = Date()
-        }
-        .sheet(isPresented: $showInfo) {
-            InfoView()
-        }
-    }
-}
-
-struct InfoView: View {
-    var body: some View {
-        NavigationView {
-            VStack(spacing: 20) {
-                Text("Alerto")
-                    .font(.largeTitle)
-                    .fontWeight(.bold)
-                Text("Version 1.0.0")
-                    .font(.title2)
-                Text("Diese App erkennt Geräusche über BLE und zeigt sie an.\n\nEntwickelt von Tobias Lindhorst.")
-                    .multilineTextAlignment(.center)
-                    .padding()
-                Spacer()
-            }
-            .navigationTitle("Info")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Fertig") { }
-                }
-            }
-            .padding()
+        // Aktualisiere currentDate jede Sekunde, um die History-Liste dynamisch zu aktualisieren
+        .onReceive(Timer.publish(every: 1, on: .main, in: .common).autoconnect()) { now in
+            currentDate = now
         }
     }
 }

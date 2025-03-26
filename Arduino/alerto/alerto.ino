@@ -38,9 +38,16 @@ static signed short *sampleBuffer;
 static bool debug_nn = false; // Debug-Ausgaben deaktiviert
 static int print_results = -(EI_CLASSIFIER_SLICES_PER_MODEL_WINDOW);
 
-/** Timer für BLE-Signale */
+/* Timer für BLE-Signale */
 unsigned long lastSignalTime = 0;
 const unsigned long signalCooldown = 3000; // 3000 ms = 3 Sekunden
+
+/* Neue globale Variablen für LED-Management */
+// Speichert die aktuell aktive Kategorie (z. B. "Tuerklingel", "Rauchmelder", "Klopfen")
+// Ist der String leer, so ist keine LED-Aktivierung aktiv.
+char activeCategory[32] = "";
+// Zeitpunkt (millis), bis zu dem die LED leuchten soll
+unsigned long ledTimeout = 0;
 
 /* Implementierung der LED-Funktionen */
 void setLEDColor(uint32_t color) {
@@ -202,6 +209,12 @@ void loop()
     // BLE Polling
     BLE.poll();
 
+    // Prüfe, ob der LED-Countdown abgelaufen ist
+    if (activeCategory[0] != '\0' && millis() > ledTimeout) {
+        clearLEDs();
+        activeCategory[0] = '\0';
+    }
+
     // Auf neue Audio-Daten warten
     if (!microphone_inference_record()) {
         ei_printf("ERR: Failed to record audio...\r\n");
@@ -214,9 +227,6 @@ void loop()
     signal.get_data = &microphone_audio_signal_get_data;
 
     ei_impulse_result_t result = { 0 };
-
-    // Es erfolgt KEIN Aufruf von indicateRecording(true),
-    // sodass die LED nicht automatisch weiß blinkt.
 
     // Kontinuierliche Klassifikation mittels run_classifier_continuous()
     EI_IMPULSE_ERROR r = run_classifier_continuous(&signal, &result, debug_nn);
@@ -248,18 +258,37 @@ void loop()
             ei_printf("Anomaly score: %.3f\r\n", result.anomaly);
 #endif
 
-            // Setze LED-Farbe je nach erkanntem Label
-            if (strcmp(predictedLabel, "Tuerklingel") == 0) {
-                setLEDColor(strip.Color(0, 0, 255));  // Blau
-            }
-            else if (strcmp(predictedLabel, "Rauchmelder") == 0) {
-                setLEDColor(strip.Color(255, 0, 0));  // Rot
-            }
-            else if (strcmp(predictedLabel, "Klopfen") == 0) {
-                setLEDColor(strip.Color(0, 255, 0));  // Grün
+            /* LED-Logik:
+               - Bei einem erkannten Signal, das **nicht** "Rauschen" ist,
+                 wird die LED in der entsprechenden Farbe aktiviert und der 10-Sekunden-Countdown gestartet.
+               - Erhält man als nächstes "Rauschen", bleibt die LED in der aktuell gewählten Farbe,
+                 bis der Countdown abläuft.
+               - Wird während eines aktiven Countdowns ein anderes Signal erkannt,
+                 wird die LED auf die neue Farbe umgestellt und der Countdown neu gestartet.
+            */
+            if (strcmp(predictedLabel, "Rauschen") != 0) {
+                // Neues Event (oder erneutes Signal) – LED-Farbe setzen und Countdown (10 s) neu starten
+                strcpy(activeCategory, predictedLabel);
+                ledTimeout = millis() + 10000;  // 10.000 ms = 10 Sekunden
+
+                if (strcmp(predictedLabel, "Tuerklingel") == 0) {
+                    setLEDColor(strip.Color(0, 0, 255));  // Blau
+                }
+                else if (strcmp(predictedLabel, "Rauchmelder") == 0) {
+                    setLEDColor(strip.Color(255, 0, 0));  // Rot
+                }
+                else if (strcmp(predictedLabel, "Klopfen") == 0) {
+                    setLEDColor(strip.Color(0, 255, 0));  // Grün
+                }
             }
             else {
-                clearLEDs(); // Bei anderen Labels (z. B. Rauschen) werden die LEDs ausgeschaltet
+                // "Rauschen" erkannt:
+                // Wenn bereits ein aktives Event besteht, bleibt die LED in der gewählten Farbe,
+                // der Countdown wird **nicht** zurückgesetzt.
+                if (activeCategory[0] == '\0') {
+                    // Falls noch kein Event aktiv ist, schalte die LEDs aus
+                    clearLEDs();
+                }
             }
 
             // Senden per BLE, falls gewünschtes Label erkannt
@@ -278,10 +307,7 @@ void loop()
                 }
             }
         }
-        else {
-            // Bei Scores unter dem Schwellenwert: LEDs ausschalten
-            clearLEDs();
-        }
+        // Den Zähler zurücksetzen
         print_results = 0;
     }
 }
