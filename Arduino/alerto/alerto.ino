@@ -257,7 +257,21 @@ void loop()
 #if EI_CLASSIFIER_HAS_ANOMALY == 1
             ei_printf("Anomaly score: %.3f\r\n", result.anomaly);
 #endif
+            // Senden per BLE, falls gewünschtes Label erkannt
+            if ((strcmp(predictedLabel, "Tuerklingel") == 0 ||
+                 strcmp(predictedLabel, "Rauchmelder") == 0 ||
+                 strcmp(predictedLabel, "Rauschen") == 0 ||
+                 strcmp(predictedLabel, "Klopfen") == 0)) {
 
+                if (millis() - lastSignalTime > signalCooldown) {
+                    BLEDevice central = BLE.central();
+                    if (central) {
+                        soundCharacteristic.writeValue(predictedLabel);
+                        ei_printf("BLE signal sent: %s\r\n", predictedLabel);
+                        lastSignalTime = millis();
+                    }
+                }
+            }
             /* LED-Logik:
                - Bei einem erkannten Signal, das **nicht** "Rauschen" ist,
                  wird die LED in der entsprechenden Farbe aktiviert und der 10-Sekunden-Countdown gestartet.
@@ -272,7 +286,7 @@ void loop()
                 ledTimeout = millis() + 10000;  // 10.000 ms = 10 Sekunden
 
                 if (strcmp(predictedLabel, "Tuerklingel") == 0) {
-                    setLEDColor(strip.Color(0, 0, 255));  // Blau
+                    setLEDColor(strip.Color(204, 255, 0));  // Gelb
                 }
                 else if (strcmp(predictedLabel, "Rauchmelder") == 0) {
                     setLEDColor(strip.Color(255, 0, 0));  // Rot
@@ -291,21 +305,7 @@ void loop()
                 }
             }
 
-            // Senden per BLE, falls gewünschtes Label erkannt
-            if ((strcmp(predictedLabel, "Tuerklingel") == 0 ||
-                 strcmp(predictedLabel, "Rauchmelder") == 0 ||
-                 strcmp(predictedLabel, "Rauschen") == 0 ||
-                 strcmp(predictedLabel, "Klopfen") == 0)) {
-
-                if (millis() - lastSignalTime > signalCooldown) {
-                    BLEDevice central = BLE.central();
-                    if (central) {
-                        soundCharacteristic.writeValue(predictedLabel);
-                        ei_printf("BLE signal sent: %s\r\n", predictedLabel);
-                        lastSignalTime = millis();
-                    }
-                }
-            }
+            
         }
         // Den Zähler zurücksetzen
         print_results = 0;

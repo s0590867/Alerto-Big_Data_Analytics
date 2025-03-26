@@ -9,7 +9,7 @@ import Foundation
 import CoreBluetooth
 import UserNotifications
 import SwiftUI
-import AudioToolbox  // Für Vibration
+import AudioToolbox
 
 // Struktur zur Speicherung eines empfangenen Geräuschs
 struct SoundRecord: Identifiable {
@@ -25,9 +25,9 @@ class BLEManager: NSObject, ObservableObject {
 
     private var centralManager: CBCentralManager!
     private var connectedPeripheral: CBPeripheral?
-    private var resetTimer: Timer?  // Timer, der nach 10 s das Signal zurücksetzt
+    private var resetTimer: Timer?
 
-    // UUIDs – passe diese ggf. an
+    // UUIDs
     private let soundServiceUUID = CBUUID(string: "12345678-1234-5678-1234-56789ABCDEF0")
     private let soundCharacteristicUUID = CBUUID(string: "87654321-4321-6789-4321-0FEDCBA98765")
     
@@ -133,7 +133,7 @@ extension BLEManager: CBCentralManagerDelegate, CBPeripheralDelegate {
         }
         
         DispatchQueue.main.async {
-            // Wenn das empfangene Signal "Rauschen" (case-insensitive) ist, ignoriere es
+            // Wenn das empfangene Signal "Rauschen" ist, ignoriere es
             if soundDetected.lowercased() == "rauschen" {
                 if self.resetTimer == nil {
                     self.resetTimer = Timer.scheduledTimer(withTimeInterval: 10, repeats: false) { _ in

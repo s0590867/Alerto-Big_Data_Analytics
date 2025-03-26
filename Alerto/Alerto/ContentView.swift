@@ -3,12 +3,14 @@ import SwiftUI
 struct ContentView: View {
     @EnvironmentObject var bleManager: BLEManager
     @State private var pulse = false
-    @State private var currentDate = Date()  // Aktualisiert jede Sekunde
-    
+    @State private var currentDate = Date()  // Wird zur History-Aktualisierung genutzt
+    @State private var dotCount = 0          // Für die Animation der Punkte
+    @State private var showInfo = false      // Steuert die Anzeige des Info-Sheets
+
     // Standard-Hauptfarben (Blau)
     let primaryColor = Color(red: 28/255, green: 74/255, blue: 173/255)
     let secondaryColor = Color(red: 60/255, green: 100/255, blue: 210/255)
-    
+
     // Dynamischer Hintergrund, abhängig vom aktuell angezeigten Geräusch
     var backgroundGradient: LinearGradient {
         let gradient: Gradient
@@ -24,8 +26,8 @@ struct ContentView: View {
         }
         return LinearGradient(gradient: gradient, startPoint: .topLeading, endPoint: .bottomTrailing)
     }
-    
-    // Hilfsfunktion, die den Zeitunterschied als String zurückgibt
+
+    // Berechnet den Zeitunterschied als String
     func timeAgoString(from date: Date) -> String {
         let interval = currentDate.timeIntervalSince(date)
         if interval < 60 {
@@ -36,14 +38,31 @@ struct ContentView: View {
             return String(format: "vor %.0f Std.", interval / 3600)
         }
     }
-    
+
+    // Liefert den anzuzeigenden Text:
+    // - Service inaktiv: "höre nicht zu"
+    // - Service aktiv und "Kein Geräusch": "höre zu" + animierte Punkte
+    // - Andernfalls: Das erkannte Geräusch
+    var displayText: String {
+        if !bleManager.serviceRunning {
+            return "höre nicht zu"
+        } else {
+            if bleManager.recognizedSound == "Kein Geräusch" {
+                return "höre zu" + String(repeating: ".", count: dotCount)
+            } else if bleManager.recognizedSound == "Tuerklingel" {
+                return "Türklingel"
+            } else {
+                return bleManager.recognizedSound
+            }
+        }
+    }
+
     var body: some View {
         ZStack {
             backgroundGradient
                 .edgesIgnoringSafeArea(.all)
-            
             VStack {
-                // Obere Sektion: Logo und Titel
+                // Obere Sektion: Logo und Titel (ohne Infobutton – dieser wird im Overlay platziert)
                 VStack(spacing: 20) {
                     Image("Logo")
                         .resizable()
@@ -52,11 +71,13 @@ struct ContentView: View {
                     Text("Alerto")
                         .font(.custom("Fredoka-Bold", size: 80))
                         .foregroundColor(.white)
+                        .padding(.top, -20)
                 }
-                .padding(.top, 50)
-                
+                .padding(.top, 20)
+                .padding(.bottom, 20)
+
                 Spacer()
-                
+
                 // Mittlere Sektion: Anzeige des aktuellen Signals und History
                 VStack(spacing: 20) {
                     // Anzeige des aktuellen Signals (im Kasten)
@@ -65,29 +86,34 @@ struct ContentView: View {
                             .fill(Color.white.opacity(0.2))
                             .frame(width: 300, height: 100)
                             .shadow(radius: 10)
-                            .scaleEffect(pulse ? 1.05 : 1.0)
+                            // Pulsiert nur, wenn der Service aktiv ist
+                            .scaleEffect(bleManager.serviceRunning ? (pulse ? 1.05 : 1.0) : 1.0)
                             .animation(.easeInOut(duration: 1.0).repeatForever(autoreverses: true), value: pulse)
-                        
-                        Text(bleManager.recognizedSound)
+                        Text(displayText)
                             .font(.custom("Fredoka-Bold", size: 40))
                             .fontWeight(.semibold)
                             .foregroundColor(.white)
                             .padding()
                     }
-                    .onChange(of: bleManager.recognizedSound) { _ in
-                        pulse.toggle()
-                    }
                     .onAppear {
-                        pulse = true
+                        pulse = bleManager.serviceRunning
                     }
-                    
+                    .onChange(of: bleManager.serviceRunning) { newValue in
+                        pulse = newValue
+                    }
+
                     // History-Liste der zuletzt erkannten Geräusche
-                    if !bleManager.soundHistory.isEmpty {
-                        VStack(alignment: .center, spacing: 8) {
-                            Text("Letzte Geräusche:")
-                                .font(.custom("Fredoka-Bold", size: 20))
-                                .foregroundColor(.white)
-                            ScrollView {
+                    VStack(alignment: .center, spacing: 8) {
+                        Text("Letzte Geräusche:")
+                            .font(.custom("Fredoka-Bold", size: 20))
+                            .foregroundColor(.white)
+                        ScrollView {
+                            if bleManager.soundHistory.isEmpty {
+                                Text("Keine Einträge")
+                                    .foregroundColor(.white.opacity(0.8))
+                                    .font(.caption)
+                                    .padding()
+                            } else {
                                 ForEach(bleManager.soundHistory) { record in
                                     HStack {
                                         Text(record.sound)
@@ -103,14 +129,14 @@ struct ContentView: View {
                                         .background(Color.white.opacity(0.5))
                                 }
                             }
-                            .frame(maxHeight: 150)
                         }
-                        .padding(.horizontal)
+                        .frame(maxHeight: 150)
                     }
+                    .padding(.horizontal)
                 }
-                
+
                 Spacer()
-                
+
                 // Untere Sektion: Button zum Starten/Stoppen des BLE-Service
                 Button(action: {
                     if bleManager.serviceRunning {
@@ -127,13 +153,65 @@ struct ContentView: View {
                         .background(bleManager.serviceRunning ? Color.red : Color.green)
                         .cornerRadius(10)
                 }
-                .padding(.bottom, 20)
+                .padding(.bottom, 0)
             }
             .padding()
         }
-        // Aktualisiere currentDate jede Sekunde, um die History-Liste dynamisch zu aktualisieren
-        .onReceive(Timer.publish(every: 1, on: .main, in: .common).autoconnect()) { now in
-            currentDate = now
+        // Overlay für den Infobutton
+        .overlay(
+            Button(action: { showInfo = true }) {
+                Image(systemName: "info.circle")
+                    .resizable()
+                    .frame(width: 24, height: 24)
+                    .foregroundColor(.white)
+                    .padding(8)
+            }
+            .padding(.top, 10)
+            .padding(.trailing, 16)
+            , alignment: .topTrailing
+        )
+        // Gemeinsamer Timer, der alle 0,5 Sekunden aktualisiert:
+        // • Aktualisiert currentDate (wenn sich die Sekunde ändert) für die History
+        // • Aktualisiert dotCount für die Punkte-Animation
+        .onReceive(Timer.publish(every: 0.5, on: .main, in: .common).autoconnect()) { now in
+            if bleManager.serviceRunning && bleManager.recognizedSound == "Kein Geräusch" {
+                dotCount = (dotCount + 1) % 4
+            } else {
+                dotCount = 0
+            }
+            let newSec = Calendar.current.component(.second, from: now)
+            let oldSec = Calendar.current.component(.second, from: currentDate)
+            if newSec != oldSec {
+                currentDate = now
+            }
+        }
+        // Info-Sheet
+        .sheet(isPresented: $showInfo) {
+            InfoView(showInfo: $showInfo)
+        }
+    }
+}
+
+struct InfoView: View {
+    @Binding var showInfo: Bool
+
+    var body: some View {
+        NavigationView {
+            VStack(spacing: 20) {
+                Text("Alerto App")
+                    .font(.title)
+                    .padding(.top)
+                Text("Version 1.0.0")
+                    .font(.headline)
+                Text("Diese App identifiziert Geräusche und informiert dich in Echtzeit. \n\nWeitere Infos können hier ergänzt werden.")
+                    .multilineTextAlignment(.center)
+                    .padding()
+                Spacer()
+            }
+            .navigationBarTitle("Info", displayMode: .inline)
+            .navigationBarItems(trailing: Button("Fertig") {
+                showInfo = false
+            })
         }
     }
 }
