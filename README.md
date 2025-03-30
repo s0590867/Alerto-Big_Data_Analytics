@@ -32,13 +32,18 @@ Um die Mobilität des Systems sicherzustellen, wird der Arduino über eine hande
 Für die Entwicklung und Demonstration der mobilen Anwendung wurde ein iPhone verwendet. Die App empfängt die erkannten Signale via Bluetooth und zeigt diese in einer benutzerfreundlichen Oberfläche an. Wir haben uns für eine iOS basierte App-Entwicklung entschieden, da wir gute Erfahrungen mit der BLE-Integration gemacht haben. 
 
 ## 3. Verwendete Software
-Die für das Projekt verwendete Software: 
+Zur Realisierung des Projekts wurde eine Kombination aus spezialisierter Entwicklungsumgebungen und Plattformen eingesetzt, die optimal auf die Anforderungen im Bereich Embedded Machine Learning abgestimmt sind.
 
 ### 3.1 Edge Impulse
+Edge Impulse ist eine cloudbasierte Plattform zur Entwicklung, Schulung und Optimierung von Machine-Learning-Modellen für Embedded Devices. In unserem Projekt fungierte sie als zentrale Umgebung zur Datenerfassung, Annotation sowie zum Trainieren des Klassifikationsmodells für akustische Signale.
+Wir haben zunächst für jede Geräuschklasse (Rauchmelder, Türklingel, Klopfen) etwa 100 Audiosamples aufgenommen und eingespielt (mit einer Samplingrate von 16 kHz und einer Dauer von 4 Sekunden pro Sample). Mithilfe des integrierten Classifiers sowie des EON Tuners konnten wir verschiedene Modellvarianten analysieren und bewerten.
+Als besonders geeignet hat sich die MFE-Variante (Mel Filterbank Energy) herausgestellt, die eine Modellgenauigkeit von 93 % erzielte. Dieses Feature-Set passt optimal zu unserem Use Case, da es ressourcenschonend arbeitet und sich gut für Geräuscherkennung auf Geräten mit begrenztem Speicher eignet. Alternative Methoden wie Spectrogramme waren aufgrund des höheren Speicherbedarfs nicht praktikabel, und MFCCs (Mel Frequency Cepstral Coefficients) sind eher für sprachbasierte Anwendungen optimiert.
 
 ### 2.2 Arduino IDE
+Die Arduino IDE wurde verwendet, um den Mikrocontroller zu programmieren und das in Edge Impulse trainierte Modell auf das Gerät zu übertragen. Zusätzlich integrierten wir die ArduinoBLE Bibliothek, um eine stabile Bluetooth-Kommunikation zwischen dem Arduino und der iOS-App zu ermöglichen. Die IDE war zudem hilfreich beim Testen und Debuggen des Gesamtsystems.
 
 ### 2.3 xCode
+Für die Entwicklung der mobilen iOS-Anwendung kam Xcode zum Einsatz. Mit Hilfe von Swift und der CoreBluetooth-API wurde eine App erstellt, die die Signale des Arduinos über BLE empfängt und dem Nutzer eine visuelle Rückmeldung in Form einer klar strukturierten Benutzeroberfläche bietet. Xcode ermöglichte uns eine effiziente Entwicklung und eine reibungslose Integration mit Apple-Geräten. Gerade durch das Live-Testing und einsteigerfreundlichen Programmierung können wir die Umgebung für kurzweilige Projekte nur empfehlen. 
 
 ## 4. Ordnerstruktur des Repositories
 
