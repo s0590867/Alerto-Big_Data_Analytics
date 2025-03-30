@@ -16,7 +16,7 @@ Zusätzlich haben wir einen LED-Ring verwendet, welcher die klassifizierten Ger�
 ## 2. Verwendete Hardware
 Es folgt eine Auflistung der im Projekt verwendeten Hardware:
 
-### 2.1 Arduino Nano BLe 33 Sense
+### 2.1 Arduino Nano BLE 33 Sense
 Der Arduino Nano 33 BLE Sense ist das Herzstück unseres Projekts. Er besitzt integrierte Sensoren – darunter ein Mikrophon –, die ideal für Anwendungen im Bereich TinyML geeignet sind. Durch den verbauten Cortex-M4-Prozessor mit Bluetooth Low Energy Unterstützung kann das trainierte Modell direkt auf dem Mikrocontroller laufen und gleichzeitig eine Verbindung zur App aufbauen.
 ### 2.2 LED-Ring (WS2813)
 Zur visuellen Rückmeldung der erkannten Geräusche verwenden wir einen programmierbaren LED-Ring vom Typ WS2813. Jede erkannte Geräuschklasse wird durch eine individuelle Farbe dargestellt, um dem Nutzer eine schnelle und intuitive Rückmeldung zu ermöglichen.
