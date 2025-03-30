@@ -78,5 +78,10 @@ Hinweis:
 Die Datei .DS_Store wird automatisch von macOS erstellt und enthält keine relevanten Projektdaten. Sie kann bei Bedarf ignoriert oder aus dem Repository entfernt werden.  
 
 ## 5. Zusätzliche Dateien
+Unter [Begleitmaterial](https://github.com/s0590867/bigdata_analytics/tree/main/Begleitmaterial) sind zusätzliche Dateien zu finden, zur Erklärung und Verständnis des Projekts. 
+- Produktpräsentation - Zwischenpräsentation (Powerpoint)
+- Vorstellung des Protoypen - Abschlusspräsentation (Powerpoint)
+- Demovideo zur Veranschaulichung
 
+  
 ## 6. Quellen
