@@ -50,11 +50,11 @@ Das Repository ist in mehrere Hauptbereiche unterteilt, die jeweils unterschiedl
 
 **bigdata_analytics/
 
-├── Alerto/               → iOS-App mit Xcode-Projektdateien 
-│   ├── Alerto.xcodeproj  → Projektdateien für Xcode 
-│   ├── Alerto/           → Hauptordner mit Swift-Code der App 
-│   ├── AlertoTests/      → Unit Tests für die iOS-App 
-│   ├── AlertoUITests/    → UI Tests für die iOS-App 
+├── Alerto/               → iOS-App mit Xcode-Projektdateien  
+│   ├── Alerto.xcodeproj  → Projektdateien für Xcode  
+│   ├── Alerto/           → Hauptordner mit Swift-Code der App
+│   ├── AlertoTests/      → Unit Tests für die iOS-App
+│   ├── AlertoUITests/    → UI Tests für die iOS-App
 │   └── .DS_Store         → Automatisch generierte macOS-Systemdatei
 │
 ├── Arduino/              → Arduino-Code für das Mikrocontroller-Modul
