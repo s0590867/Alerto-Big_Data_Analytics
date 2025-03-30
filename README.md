@@ -49,8 +49,11 @@ Für die Entwicklung der mobilen iOS-Anwendung kam Xcode zum Einsatz. Mit Hilfe 
 Das Repository ist in mehrere Hauptbereiche unterteilt, die jeweils unterschiedliche Teile des Projekts abbilden. Dies sorgt für eine klare Trennung zwischen Hardware- und Softwarekomponenten:
 
 **bigdata_analytics/
+
 ├── Alerto/               → iOS-App mit Xcode-Projektdateien
+
 │   ├── Alerto.xcodeproj  → Projektdateien für Xcode
+
 │   ├── Alerto/           → Hauptordner mit Swift-Code der App
 │   ├── AlertoTests/      → Unit Tests für die iOS-App
 │   ├── AlertoUITests/    → UI Tests für die iOS-App
