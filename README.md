@@ -46,6 +46,25 @@ Die Arduino IDE wurde verwendet, um den Mikrocontroller zu programmieren und das
 Für die Entwicklung der mobilen iOS-Anwendung kam Xcode zum Einsatz. Mit Hilfe von Swift und der CoreBluetooth-API wurde eine App erstellt, die die Signale des Arduinos über BLE empfängt und dem Nutzer eine visuelle Rückmeldung in Form einer klar strukturierten Benutzeroberfläche bietet. Xcode ermöglichte uns eine effiziente Entwicklung und eine reibungslose Integration mit Apple-Geräten. Gerade durch das Live-Testing und einsteigerfreundlichen Programmierung können wir die Umgebung für kurzweilige Projekte nur empfehlen. 
 
 ## 4. Ordnerstruktur des Repositories
+Das Repository ist in mehrere Hauptbereiche unterteilt, die jeweils unterschiedliche Teile des Projekts abbilden. Dies sorgt für eine klare Trennung zwischen Hardware- und Softwarekomponenten:
+bigdata_analytics/
+├── Alerto/               → iOS-App mit Xcode-Projektdateien
+│   ├── Alerto.xcodeproj  → Projektdateien für Xcode
+│   ├── Alerto/           → Hauptordner mit Swift-Code der App
+│   ├── AlertoTests/      → Unit Tests für die iOS-App
+│   ├── AlertoUITests/    → UI Tests für die iOS-App
+│   └── .DS_Store         → Automatisch generierte macOS-Systemdatei
+│
+├── Arduino/              → Arduino-Code für das Mikrocontroller-Modul
+│   ├── alerto_final/     → Finales Arduino-Skript inklusive BLE-Logik und LED-Steuerung
+│   ├── libraries/        → Zusätzliche Bibliotheken für den Arduino-Sketch
+│   └── .DS_Store         → Automatisch generierte macOS-Systemdatei
+│
+├── README.md             → Projektbeschreibung und Dokumentation
+└── .DS_Store             → Automatisch generierte macOS-Systemdatei
+
+Hinweis:
+Die Datei .DS_Store wird automatisch von macOS erstellt und enthält keine relevanten Projektdaten. Sie kann bei Bedarf ignoriert oder aus dem Repository entfernt werden.
 
 ## 5. Zusätzliche Dateien
 
