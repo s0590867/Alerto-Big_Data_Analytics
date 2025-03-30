@@ -17,9 +17,9 @@ void clearLEDs(void);
 #define NUM_LEDS 20
 Adafruit_NeoPixel strip(NUM_LEDS, LED_PIN, NEO_GRB + NEO_KHZ800);
 
-/** BLE-Konfiguration */
-#define SOUND_SERVICE_UUID         "12345678-1234-5678-1234-56789ABCDEF0"
-#define SOUND_CHARACTERISTIC_UUID  "87654321-4321-6789-4321-0FEDCBA98765"
+/** BLE-Konfiguration mit UUIDs */
+#define SOUND_SERVICE_UUID         "fa71f9aa-e22e-42a7-a530-109d9416f179"
+#define SOUND_CHARACTERISTIC_UUID  "bcfd9054-1b04-46a4-a2a4-856ae18c455e"
 BLEService soundService(SOUND_SERVICE_UUID);
 BLEStringCharacteristic soundCharacteristic(SOUND_CHARACTERISTIC_UUID, BLERead | BLENotify, 20);
 
@@ -35,7 +35,7 @@ typedef struct {
 static inference_t inference;
 static bool record_ready = false;
 static signed short *sampleBuffer;
-static bool debug_nn = false; // Debug-Ausgaben deaktiviert
+static bool debug_nn = false; 
 static int print_results = -(EI_CLASSIFIER_SLICES_PER_MODEL_WINDOW);
 
 /* Timer für BLE-Signale */
@@ -44,7 +44,7 @@ const unsigned long signalCooldown = 3000; // 3000 ms = 3 Sekunden
 
 /* Neue globale Variablen für LED-Management */
 // Speichert die aktuell aktive Kategorie (z. B. "Tuerklingel", "Rauchmelder", "Klopfen")
-// Ist der String leer, so ist keine LED-Aktivierung aktiv.
+// Ist der String leer, wird keine LED aktiviert.
 char activeCategory[32] = "";
 // Zeitpunkt (millis), bis zu dem die LED leuchten soll
 unsigned long ledTimeout = 0;
@@ -61,7 +61,7 @@ void clearLEDs(void) {
   setLEDColor(0);
 }
 
-/* Die Funktion indicateRecording schaltet alle LEDs auf Weiß, wenn aktiv, oder löscht sie */
+/* Die Funktion indicateRecording schaltet alle LEDs auf Weiß, wenn aktiv, oder schaltet diese ab */
 void indicateRecording(bool isActive) {
   if (isActive) {
     setLEDColor(strip.Color(100, 100, 100));
@@ -91,7 +91,7 @@ static void pdm_data_ready_inference_callback(void)
 }
 
 /* Initialisiert Audio-Inferencing und startet PDM.
-   Verwendet EI_CLASSIFIER_SLICE_SIZE aus der exportierten Library */
+   Verwendet EI_CLASSIFIER_SLICE_SIZE aus der Library Alerto2 */
 static bool microphone_inference_start(uint32_t n_samples)
 {
     inference.buffers[0] = (signed short *)malloc(n_samples * sizeof(signed short));
@@ -130,7 +130,7 @@ static bool microphone_inference_start(uint32_t n_samples)
     return true;
 }
 
-/* Blockierendes Warten auf neue Audio-Daten */
+/* Warten auf neue Audio-Daten */
 static bool microphone_inference_record(void)
 {
     bool ret = true;
@@ -168,7 +168,7 @@ void setup()
 {
     Serial.begin(115200);
     while (!Serial);
-
+    // Textausgabe beim Start 
     ei_printf("Edge Impulse Inferencing Demo\r\n");
     ei_printf("Inferencing settings:\r\n");
     ei_printf("\tInterval: %.2f ms.\r\n", (float)EI_CLASSIFIER_INTERVAL_MS);
@@ -273,7 +273,7 @@ void loop()
                 }
             }
             /* LED-Logik:
-               - Bei einem erkannten Signal, das **nicht** "Rauschen" ist,
+               - Bei einem erkannten Signal, das nicht "Rauschen" ist,
                  wird die LED in der entsprechenden Farbe aktiviert und der 10-Sekunden-Countdown gestartet.
                - Erhält man als nächstes "Rauschen", bleibt die LED in der aktuell gewählten Farbe,
                  bis der Countdown abläuft.

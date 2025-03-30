@@ -28,8 +28,8 @@ class BLEManager: NSObject, ObservableObject {
     private var resetTimer: Timer?
 
     // UUIDs
-    private let soundServiceUUID = CBUUID(string: "12345678-1234-5678-1234-56789ABCDEF0")
-    private let soundCharacteristicUUID = CBUUID(string: "87654321-4321-6789-4321-0FEDCBA98765")
+    private let soundServiceUUID = CBUUID(string: "fa71f9aa-e22e-42a7-a530-109d9416f179")
+    private let soundCharacteristicUUID = CBUUID(string: "bcfd9054-1b04-46a4-a2a4-856ae18c455e")
     
     override init() {
         super.init()
