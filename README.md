@@ -85,3 +85,11 @@ Unter [Begleitmaterial](https://github.com/s0590867/bigdata_analytics/tree/main/
 
   
 ## 6. Quellen
+
+1. [Edge Impulse Dokumentation](https://docs.edgeimpulse.com/docs)
+2. [Processing blocks in Edge Impulse ](https://docs.edgeimpulse.com/docs/edge-impulse-studio/processing-blocks)
+3. [Sounddateien - hauptsächlich Klopfen ](https://github.com/karolpiczak/ESC-50/tree/master)
+4. [Weitere Soundbeispiele für die Trainingsdaten](https://freesound.org/people/nozefian/sounds/397919/)
+5. [Alerto Logo](https://www.canva.com/icons/MAFc0WHB9IQ-ninja-talk-bubble-speech-logo-illustration/)
+
+
