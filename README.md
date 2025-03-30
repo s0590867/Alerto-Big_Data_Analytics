@@ -23,3 +23,18 @@ Es folgt eine Auflistung der im Projekt verwendeten Hardware:
 ### 2.3 Powerbank
 
 ### 2.4 Iphone
+
+## 3. Verwendete Software
+Die für das Projekt verwendete Software: 
+
+### 3.1 Edge Impulse
+
+### 2.2 Arduino IDE
+
+### 2.3 xCode
+
+## 4. Ordnerstruktur des Repositories
+
+## 5. Zusätzliche Dateien
+
+## 6. Quellen
