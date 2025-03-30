@@ -1,1 +1,3 @@
-# bigdata_analytics
+# Big Data Analytics Projekt - Alerto 
+
+## Produktbeschreibung
