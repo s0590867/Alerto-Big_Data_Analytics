@@ -52,21 +52,21 @@ Das Repository ist in mehrere Hauptbereiche unterteilt, die jeweils unterschiedl
 
 ├── Alerto/               → iOS-App mit Xcode-Projektdateien  
 │   ├── Alerto.xcodeproj  → Projektdateien für Xcode  
-│   ├── Alerto/           → Hauptordner mit Swift-Code der App
-│   ├── AlertoTests/      → Unit Tests für die iOS-App
-│   ├── AlertoUITests/    → UI Tests für die iOS-App
-│   └── .DS_Store         → Automatisch generierte macOS-Systemdatei
-│
-├── Arduino/              → Arduino-Code für das Mikrocontroller-Modul
-│   ├── alerto_final/     → Finales Arduino-Skript inklusive BLE-Logik und LED-Steuerung
-│   ├── libraries/        → Zusätzliche Bibliotheken für den Arduino-Sketch
-│   └── .DS_Store         → Automatisch generierte macOS-Systemdatei
-│
-├── README.md             → Projektbeschreibung und Dokumentation
-└── .DS_Store             → Automatisch generierte macOS-Systemdatei**
+│   ├── Alerto/           → Hauptordner mit Swift-Code der App  
+│   ├── AlertoTests/      → Unit Tests für die iOS-App  
+│   ├── AlertoUITests/    → UI Tests für die iOS-App  
+│   └── .DS_Store         → Automatisch generierte macOS-Systemdatei  
+│  
+├── Arduino/              → Arduino-Code für das Mikrocontroller-Modul  
+│   ├── alerto_final/     → Finales Arduino-Skript inklusive BLE-Logik und LED-Steuerung  
+│   ├── libraries/        → Zusätzliche Bibliotheken für den Arduino-Sketch  
+│   └── .DS_Store         → Automatisch generierte macOS-Systemdatei  
+│  
+├── README.md             → Projektbeschreibung und Dokumentation  
+└── .DS_Store             → Automatisch generierte macOS-Systemdatei**  
 
-Hinweis:
-Die Datei .DS_Store wird automatisch von macOS erstellt und enthält keine relevanten Projektdaten. Sie kann bei Bedarf ignoriert oder aus dem Repository entfernt werden.
+Hinweis:  
+Die Datei .DS_Store wird automatisch von macOS erstellt und enthält keine relevanten Projektdaten. Sie kann bei Bedarf ignoriert oder aus dem Repository entfernt werden.  
 
 ## 5. Zusätzliche Dateien
 
