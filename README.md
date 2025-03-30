@@ -8,6 +8,7 @@ Hierfür wird der Arduino Nano 33 BLE Sense verwendet, um die Geräuschdaten üb
 - Rauchmelder
 - Türklingel
 - Klopfen (an der Tür)
+  
 Die Klassifizierung der Daten und das Trainieren des Modells wurde in [Edge Impulse](https://edgeimpulse.com/) gemacht, hierbei dient die Platform speziell dafür TinyML Modelle zu trainieren und optimieren.
 Die letztendlichen Ergebnisse wurde dann mithilfe von [ArduinoBLE](https://docs.arduino.cc/libraries/arduinoble/) auf den Arduino geflasht und in einer in xCode programmierten mobilen Anwendung für iOS dargestellt.
 Dazu haben wir eine Art physischen Prototypen in Form eines LED-Rings gebaut, welcher die Geräusche farblich wiedergibt, um einen zusätzlichen Alert zu geben.
