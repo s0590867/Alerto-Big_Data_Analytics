@@ -47,7 +47,8 @@ Für die Entwicklung der mobilen iOS-Anwendung kam Xcode zum Einsatz. Mit Hilfe 
 
 ## 4. Ordnerstruktur des Repositories
 Das Repository ist in mehrere Hauptbereiche unterteilt, die jeweils unterschiedliche Teile des Projekts abbilden. Dies sorgt für eine klare Trennung zwischen Hardware- und Softwarekomponenten:
-bigdata_analytics/
+
+**bigdata_analytics/
 ├── Alerto/               → iOS-App mit Xcode-Projektdateien
 │   ├── Alerto.xcodeproj  → Projektdateien für Xcode
 │   ├── Alerto/           → Hauptordner mit Swift-Code der App
@@ -61,7 +62,7 @@ bigdata_analytics/
 │   └── .DS_Store         → Automatisch generierte macOS-Systemdatei
 │
 ├── README.md             → Projektbeschreibung und Dokumentation
-└── .DS_Store             → Automatisch generierte macOS-Systemdatei
+└── .DS_Store             → Automatisch generierte macOS-Systemdatei**
 
 Hinweis:
 Die Datei .DS_Store wird automatisch von macOS erstellt und enthält keine relevanten Projektdaten. Sie kann bei Bedarf ignoriert oder aus dem Repository entfernt werden.
