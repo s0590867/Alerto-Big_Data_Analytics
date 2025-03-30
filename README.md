@@ -85,11 +85,13 @@ Unter [Begleitmaterial](https://github.com/s0590867/bigdata_analytics/tree/main/
 
   
 ## 6. Quellen
+Für dieses Projekt haben wir folgende Quellen benutzt: 
 
 1. [Edge Impulse Dokumentation](https://docs.edgeimpulse.com/docs)
 2. [Processing blocks in Edge Impulse ](https://docs.edgeimpulse.com/docs/edge-impulse-studio/processing-blocks)
 3. [Sounddateien - hauptsächlich Klopfen ](https://github.com/karolpiczak/ESC-50/tree/master)
 4. [Weitere Soundbeispiele für die Trainingsdaten](https://freesound.org/people/nozefian/sounds/397919/)
-5. [Alerto Logo](https://www.canva.com/icons/MAFc0WHB9IQ-ninja-talk-bubble-speech-logo-illustration/)
+5. [Beispiel für Continous Audio Recording](https://github.com/s0590867/bigdata_analytics/blob/main/Arduino/libraries/Alerto2_inferencing/examples/nano_ble33_sense/nano_ble33_sense_microphone_continuous/nano_ble33_sense_microphone_continuous.ino)
+6. [Alerto Logo](https://www.canva.com/icons/MAFc0WHB9IQ-ninja-talk-bubble-speech-logo-illustration/)
 
 
