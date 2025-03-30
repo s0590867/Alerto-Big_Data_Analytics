@@ -2,7 +2,7 @@
 //  BLEManager.swift
 //  Alerto
 //
-//  Created by Tobias Lindhorst on 24.03.25.
+//  Created by Tobias Lindhorst, Maximilian Berthold, Leander Piepenbring on 24.03.25.
 //
 
 import Foundation
@@ -27,10 +27,11 @@ class BLEManager: NSObject, ObservableObject {
     private var connectedPeripheral: CBPeripheral?
     private var resetTimer: Timer?
 
-    // UUIDs
+    // UUIDs wie im Arduino-Sketch
     private let soundServiceUUID = CBUUID(string: "fa71f9aa-e22e-42a7-a530-109d9416f179")
     private let soundCharacteristicUUID = CBUUID(string: "bcfd9054-1b04-46a4-a2a4-856ae18c455e")
     
+    // Berechtigung zur Benachrichtigung
     override init() {
         super.init()
         centralManager = CBCentralManager(delegate: self, queue: nil)
@@ -44,19 +45,19 @@ class BLEManager: NSObject, ObservableObject {
             }
         }
     }
-    
+    // Benachrichtigung versenden
     private func sendLocalNotification(for sound: String) {
         let content = UNMutableNotificationContent()
         content.title = "🔊 \(sound) 🔊"
         content.body = "Es wurde ein neues Geräusch erkannt."
-        content.sound = .defaultCritical  // Kritischer Standardton
+        content.sound = .defaultCritical
         let request = UNNotificationRequest(identifier: UUID().uuidString,
                                             content: content,
                                             trigger: nil)
         UNUserNotificationCenter.current().add(request, withCompletionHandler: nil)
     }
     
-    // BLE-Service starten
+    // BLE-Service starten und Suche nach Geräten, die den Service mti der UUID anbieten.
     func startService() {
         if centralManager.state == .poweredOn {
             centralManager.scanForPeripherals(withServices: [soundServiceUUID], options: nil)
@@ -67,7 +68,7 @@ class BLEManager: NSObject, ObservableObject {
         }
     }
     
-    // BLE-Service stoppen
+    // BLE-Service stoppen und bestehende Verbindung trennen
     func stopService() {
         centralManager.stopScan()
         if let peripheral = connectedPeripheral {
@@ -79,6 +80,8 @@ class BLEManager: NSObject, ObservableObject {
     }
 }
 
+
+// CBCentralManagerDelegate und CBPeripheralDelegate Erweiterungen für BLE-Kommunikation
 extension BLEManager: CBCentralManagerDelegate, CBPeripheralDelegate {
     func centralManagerDidUpdateState(_ central: CBCentralManager) {
         switch central.state {
@@ -91,6 +94,7 @@ extension BLEManager: CBCentralManagerDelegate, CBPeripheralDelegate {
         }
     }
     
+    // Wird aufgerufen, wenn ein passendes Peripheriegerät entdeckt wurde, speichert dieses und stoppt die Suche
     func centralManager(_ central: CBCentralManager,
                         didDiscover peripheral: CBPeripheral,
                         advertisementData: [String : Any],
@@ -101,10 +105,12 @@ extension BLEManager: CBCentralManagerDelegate, CBPeripheralDelegate {
         centralManager.connect(peripheral, options: nil)
     }
     
+    // Wird aufgerufen, wenn eine Verbindung zu einem Peripheriegerät erfolgreich hergestellt wurde
     func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
         peripheral.discoverServices([soundServiceUUID])
     }
     
+    // Wird aufgerufen, wenn der Service des Arduinos entdeckt wurde
     func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: Error?) {
         if let services = peripheral.services {
             for service in services where service.uuid == soundServiceUUID {
@@ -113,6 +119,7 @@ extension BLEManager: CBCentralManagerDelegate, CBPeripheralDelegate {
         }
     }
     
+    // Wird aufgerufen, wenn die Characteristic des Service entdeckt wurde
     func peripheral(_ peripheral: CBPeripheral,
                     didDiscoverCharacteristicsFor service: CBService,
                     error: Error?) {
@@ -123,6 +130,7 @@ extension BLEManager: CBCentralManagerDelegate, CBPeripheralDelegate {
         }
     }
     
+    // Wird aufgerufen, wenn sich der Wert der Charateristic ändert
     func peripheral(_ peripheral: CBPeripheral,
                     didUpdateValueFor characteristic: CBCharacteristic,
                     error: Error?) {

@@ -62,7 +62,7 @@ struct ContentView: View {
             backgroundGradient
                 .edgesIgnoringSafeArea(.all)
             VStack {
-                // Obere Sektion: Logo und Titel (ohne Infobutton – dieser wird im Overlay platziert)
+                // Obere Sektion: Logo und Titel
                 VStack(spacing: 20) {
                     Image("Logo")
                         .resizable()

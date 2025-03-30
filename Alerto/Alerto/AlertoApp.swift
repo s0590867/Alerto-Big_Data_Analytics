@@ -1,8 +1,8 @@
 //
-//  NoiseNinaApp.swift
-//  NoiseNina
+//  AlertoApp.swift
+//  Alerto
 //
-//  Created by Tobias Lindhorst  on 18.03.25.
+//  Created by Tobias Lindhorst, Maximilian Berthold & Leander Piepenbring  on 18.03.25.
 //
 
 import SwiftUI
