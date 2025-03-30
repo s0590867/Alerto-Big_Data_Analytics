@@ -93,5 +93,5 @@ Für dieses Projekt haben wir folgende Quellen benutzt:
 4. [Weitere Soundbeispiele für die Trainingsdaten](https://freesound.org/people/nozefian/sounds/397919/)
 5. [Beispiel für Continous Audio Recording](https://github.com/s0590867/bigdata_analytics/blob/main/Arduino/libraries/Alerto2_inferencing/examples/nano_ble33_sense/nano_ble33_sense_microphone_continuous/nano_ble33_sense_microphone_continuous.ino)
 6. [Alerto Logo](https://www.canva.com/icons/MAFc0WHB9IQ-ninja-talk-bubble-speech-logo-illustration/)
-
+7. [Alerto Projekt in Edge Impulse](https://studio.edgeimpulse.com/studio/654555)
 
