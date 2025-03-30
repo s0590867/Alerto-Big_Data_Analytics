@@ -57,10 +57,19 @@ bigdata_analytics/
 │   ├── AlertoUITests/    → UI Tests für die iOS-App  
 │   └── .DS_Store         → Automatisch generierte macOS-Systemdatei  
 │  
-├── Arduino/              → Arduino-Code für das Mikrocontroller-Modul  
-│   ├── alerto_final/     → Finales Arduino-Skript inklusive BLE-Logik und LED-Steuerung  
-│   ├── libraries/        → Zusätzliche Bibliotheken für den Arduino-Sketch  
-│   └── .DS_Store         → Automatisch generierte macOS-Systemdatei  
+├── Arduino/                   # Arduino-Code für das Mikrocontroller-Modul  
+│   ├── alerto_final/          # Finales Arduino-Skript inkl. BLE-Logik & LED-Steuerung  
+│   ├── libraries/             # Externe Bibliotheken für Arduino-Projekt  
+│   │   ├── Adafruit_NeoPixel          # Steuerung des WS2813-LED-Rings  
+│   │   ├── Adafruit_Zero_PDM_Library  # Unterstützung für das PDM-Mikrofon  
+│   │   ├── ArduinoBLE                 # Bibliothek zur BLE-Kommunikation  
+│   │   ├── Alerto2_inferencing        # Enthält das generierte TinyML-Modell  
+│   │   │   ├── examples               # Beispielprojekte zur Modellnutzung  
+│   │   │   ├── src                    # Quellcode des ML-Inferenzmoduls  
+│   │   │   ├── library.properties     # Bibliotheks-Metadaten  
+│   │   │   └── .DS_Store              # Automatisch generierte macOS-Systemdatei  
+│   │   └── .DS_Store                  # Automatisch generierte macOS-Systemdatei  
+│   └── .DS_Store                      # Automatisch generierte macOS-Systemdatei  
 │  
 ├── README.md             → Projektbeschreibung und Dokumentation  
 └── .DS_Store             → Automatisch generierte macOS-Systemdatei**  
