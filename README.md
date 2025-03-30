@@ -10,8 +10,8 @@ Hierfür wird der Arduino Nano 33 BLE Sense verwendet, um die Geräuschdaten üb
 - Klopfen (an der Tür)
   
 Die Klassifizierung der Daten und das Trainieren des Modells wurde in [Edge Impulse](https://edgeimpulse.com/) gemacht, hierbei dient die Platform speziell dafür TinyML Modelle zu trainieren und optimieren.
-Die letztendlichen Ergebnisse wurde dann mithilfe von [ArduinoBLE](https://docs.arduino.cc/libraries/arduinoble/) auf den Arduino geflasht und in einer in xCode programmierten mobilen Anwendung für iOS dargestellt.
-Dazu haben wir eine Art physischen Prototypen in Form eines LED-Rings gebaut, welcher die Geräusche farblich wiedergibt, um einen zusätzlichen Alert zu geben.
+Die letztendlichen Ergebnisse wurde dann mithilfe der Arduino IDE auf den Arduino geflasht und in einer in Xcode programmierten mobilen Anwendung für iOS dargestellt.
+Zusätzlich haben wir einen LED-Ring verwendet, welcher die klassifizierten Geräusche farblich darstellt, um einen zusätzlichen Alert zu geben.
 
 ## 2. Verwendete Hardware
 Es folgt eine Auflistung der im Projekt verwendeten Hardware:
@@ -28,8 +28,8 @@ Zur visuellen Rückmeldung der erkannten Geräusche verwenden wir einen programm
 ### 2.3 Powerbank
 Um die Mobilität des Systems sicherzustellen, wird der Arduino über eine handelsübliche Powerbank betrieben. Dadurch kann das System flexibel im Haushalt platziert werden, ohne an eine feste Stromquelle gebunden zu sein.
 
-### 2.4 Iphone
-Für die Entwicklung und Demonstration der mobilen Anwendung wurde ein iPhone verwendet. Die App empfängt die erkannten Signale via Bluetooth und zeigt diese in einer benutzerfreundlichen Oberfläche an. Wir haben uns für eine iOS basierte App-Entwicklung entschieden, da wir gute Erfahrungen mit der BLE-Integration gemacht haben. 
+### 2.4 iPhone
+Für die Entwicklung und Demonstration der mobilen Anwendung wurde ein iPhone verwendet. Die App empfängt die erkannten Signale via Bluetooth Low Energy und zeigt diese in einer benutzerfreundlichen Oberfläche an. Wir haben uns für eine iOS basierte App-Entwicklung entschieden, da wir gute Erfahrungen mit der BLE-Integration gemacht haben. 
 
 ## 3. Verwendete Software
 Zur Realisierung des Projekts wurde eine Kombination aus spezialisierter Entwicklungsumgebungen und Plattformen eingesetzt, die optimal auf die Anforderungen im Bereich Embedded Machine Learning abgestimmt sind.
@@ -42,8 +42,8 @@ Als besonders geeignet hat sich die MFE-Variante (Mel Filterbank Energy) herausg
 ### 2.2 Arduino IDE
 Die Arduino IDE wurde verwendet, um den Mikrocontroller zu programmieren und das in Edge Impulse trainierte Modell auf das Gerät zu übertragen. Zusätzlich integrierten wir die ArduinoBLE Bibliothek, um eine stabile Bluetooth-Kommunikation zwischen dem Arduino und der iOS-App zu ermöglichen. Die IDE war zudem hilfreich beim Testen und Debuggen des Gesamtsystems.
 
-### 2.3 xCode
-Für die Entwicklung der mobilen iOS-Anwendung kam Xcode zum Einsatz. Mit Hilfe von Swift und der CoreBluetooth-API wurde eine App erstellt, die die Signale des Arduinos über BLE empfängt und dem Nutzer eine visuelle Rückmeldung in Form einer klar strukturierten Benutzeroberfläche bietet. Xcode ermöglichte uns eine effiziente Entwicklung und eine reibungslose Integration mit Apple-Geräten. Gerade durch das Live-Testing und einsteigerfreundlichen Programmierung können wir die Umgebung für kurzweilige Projekte nur empfehlen. 
+### 2.3 Xcode
+Für die Entwicklung der mobilen iOS-Anwendung kam Xcode zum Einsatz. Mit Hilfe von Swift und der CoreBluetooth-API wurde eine App erstellt, die die Signale des Arduinos über BLE empfängt und dem Nutzer eine visuelle Rückmeldung in Form einer klar strukturierten Benutzeroberfläche bietet. Xcode ermöglichte uns eine effiziente Entwicklung und eine reibungslose Integration mit Apple-Geräten. Gerade durch das Live-Testing und die Live-Preview war eine gute Entwicklung der App möglich. Daher können wir die Umgebung für Projekte dieser Art nur empfehlen. 
 
 ## 4. Ordnerstruktur des Repositories
 Das Repository ist in mehrere Hauptbereiche unterteilt, die jeweils unterschiedliche Teile des Projekts abbilden. Dies sorgt für eine klare Trennung zwischen Hardware- und Softwarekomponenten:
